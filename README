@@ -67,7 +67,7 @@ III/ Create an ISO
 
     ◆ Copy your special packages in local directory:
       - sli (salix-live-installer)
-      - slackware-live
+      - slackware-live (slackware-live-for-salix, compile and install it) It will be used to create the iso.
 
     Get all remaining packages by issueing:
       $ ./getpkgs.sh ARCH VERSION
@@ -79,8 +79,8 @@ III/ Create an ISO
     This is done in a file named “config”. Example:
       ┊ # vim: set syn=sh:
       ┊ if [ -z "$DISTRO" ]; then
-      ┊ DISTRO=slackel
-      ┊ VER=openbox-6.0
+      ┊ DISTRO=salix
+      ┊ VER=kde-14.1
       ┊ #RLZ=test
       ┊ # empty for a final release for example
       ┊ RLZ=
