@@ -24,7 +24,9 @@ if [ `uname -m` != "x86_64" ]; then
 	if [ $retval -eq 1 ] || [ $retval -eq 255 ]; then
 		exit 0
 	else
-		if [ "$answer" == "Yes" ]; then		   
+		if [ "$answer" == "Yes" ]; then
+		mv menus menus.bak
+		cp -R ../64/menus menus
 		kv=`ls -l /boot/vmlinuz | cut -f2 -d'>' | sed s/^[^0-9]*//`
 		kvnp=`echo ${kv:0:7}`
 		(
@@ -34,6 +36,8 @@ if [ `uname -m` != "x86_64" ]; then
 		build-slackware-live.sh --init / src/live
 		mv src/live/boot/initrd.gz src/live/boot/nosmp.gz
 		mv src/live/boot/vmlinuz src/live/boot/vmlinuznp
+		rm -rf menus 
+		mv menus.bak menus
 		(
 			cd /boot
 			ln -sf /boot/vmlinuz-huge-smp-$kv /boot/vmlinuz
