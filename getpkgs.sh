@@ -33,13 +33,10 @@ mkdir -p slapt-get
 cat <<EOF > slapt-getrc
 WORKINGDIR=$PWD/slapt-get
 EXCLUDE=.*-[0-9]+dl$,$exclude
-#SOURCE=http://salix.enialis.net/$srcdir/slackware-$ver/:OFFICIAL
-#SOURCE=http://salix.enialis.net/$srcdir/slackware-$ver/extra/:OFFICIAL
+SOURCE=http://salix.enialis.net/$srcdir/slackware-$ver/:OFFICIAL
+SOURCE=http://salix.enialis.net/$srcdir/slackware-$ver/extra/:OFFICIAL
 SOURCE=http://salix.enialis.net/$srcdir/$ver/:PREFERRED
 
-SOURCE=http://www.slackel.gr/repo/$srcdir/slackware-current/:OFFICIAL
-SOURCE=http://www.slackel.gr/repo/$srcdir/slackware-current/extra/:OFFICIAL
-SOURCE=http://www.slackel.gr/repo/$srcdir/current/:CUSTOM
 EOF
 ROOT=$PWD
 export ROOT
