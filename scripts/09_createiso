@@ -25,8 +25,6 @@ if [ `uname -m` != "x86_64" ]; then
 		exit 0
 	else
 		if [ "$answer" == "Yes" ]; then
-		mv menus menus.bak
-		cp -R ../64/menus menus
 		kv=`ls -l /boot/vmlinuz | cut -f2 -d'>' | sed s/^[^0-9]*//`
 		kvnp=`echo ${kv:0:7}`
 		(
@@ -36,8 +34,6 @@ if [ `uname -m` != "x86_64" ]; then
 		build-slackware-live.sh --init / src/live
 		mv src/live/boot/initrd.gz src/live/boot/nosmp.gz
 		mv src/live/boot/vmlinuz src/live/boot/vmlinuznp
-		rm -rf menus 
-		mv menus.bak menus
 		(
 			cd /boot
 			ln -sf /boot/vmlinuz-huge-smp-$kv /boot/vmlinuz
@@ -46,6 +42,14 @@ if [ `uname -m` != "x86_64" ]; then
 	fi	
 fi
 build-slackware-live.sh --init / src/live 
+if [ `uname -m` != "x86_64" ]; then
+ if [ "$answer" != "Yes" ]; then
+	mv menus menus.bak
+	cp -R ../64/menus src/live/boot/
+	rm -rf menus 
+	mv menus.bak menus
+ fi
+fi
 build-slackware-live.sh --iso src/live "$startdir/$ISO_NAME"
 isohybrid "$ISO_NAME"
 md5sum "$ISO_NAME" > "$ISO_NAME.md5"
