@@ -40,7 +40,7 @@ if [ `uname -m` != "x86_64" ]; then
 		)
 		else
 			mv menus menus.bak
-			cp -R ../64/menus src/live/boot/
+			cp -R ../64/menus menus
 		fi
 	fi	
 fi
