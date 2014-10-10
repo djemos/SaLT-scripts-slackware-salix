@@ -9,7 +9,12 @@ cd $(dirname "$0")
 
 . scripts/00_common
 echo3 "Creating ISO..."
-CDNAME="${DISTRO}live_${VER}"
+if [ `uname -m` == "x86_64" ]; then
+ ARCH=64
+else
+ ARCH=""
+fi
+CDNAME="${DISTRO}live$ARCH-${VER}"
 echo $CDNAME
 [ -n "$DEBUG" ] && DEBUG='-d 1' || DEBUG='-d 0'
 
@@ -54,8 +59,15 @@ fi
 cp ../common/install_on_usb/* src/live/boot/syslinux
 build-slackware-live.sh --iso src/live "$startdir/$ISO_NAME"
 unset ISOHYBRID_EFI_OPTS
-if [[ "$arch" == "x86_64" ]]; then
+if [[ `uname -m` == "x86_64" ]]; then
 	ISOHYBRID_EFI_OPTS="--uefi"
+	#if [ -f /usr/share/syslinux/gptmbr.bin ]; then
+	#   cp /usr/share/syslinux/gptmbr.bin  src/live/boot/syslinux
+	#   rm src/live/boot/syslinux/mbr.bin
+	#else
+	#   echo "Could not find gptmbr.bin (syslinux)"
+    	#   exit
+    	#fi
 fi
 isohybrid $ISOHYBRID_EFI_OPTS "$ISO_NAME"
 md5sum "$ISO_NAME" > "$ISO_NAME.md5"
