@@ -61,13 +61,6 @@ build-slackware-live.sh --iso src/live "$startdir/$ISO_NAME"
 unset ISOHYBRID_EFI_OPTS
 if [[ `uname -m` == "x86_64" ]]; then
 	ISOHYBRID_EFI_OPTS="--uefi"
-	#if [ -f /usr/share/syslinux/gptmbr.bin ]; then
-	#   cp /usr/share/syslinux/gptmbr.bin  src/live/boot/syslinux
-	#   rm src/live/boot/syslinux/mbr.bin
-	#else
-	#   echo "Could not find gptmbr.bin (syslinux)"
-    	#   exit
-    	#fi
 fi
 isohybrid $ISOHYBRID_EFI_OPTS "$ISO_NAME"
 md5sum "$ISO_NAME" > "$ISO_NAME.md5"
