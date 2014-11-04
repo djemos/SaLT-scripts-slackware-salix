@@ -58,7 +58,7 @@ if [ `uname -m` != "x86_64" ]; then
 fi
 cp /usr/share/syslinux/mbr.bin src/live/boot/syslinux/
 cp ../common/install_on_usb/install_on_usb.sh src/live/boot/
-cp ../common/install_on_usb/README.install_on_usb.sh src/live/boot/
+cp ../common/install_on_usb/README_INSTALL_ON_USB.TXT src/live/boot/
 build-slackware-live.sh --iso src/live "$startdir/$ISO_NAME"
 unset ISOHYBRID_EFI_OPTS
 if [[ `uname -m` == "x86_64" ]]; then
@@ -67,4 +67,3 @@ fi
 isohybrid $ISOHYBRID_EFI_OPTS "$ISO_NAME"
 md5sum "$ISO_NAME" > "$ISO_NAME.md5"
 echo $ISO_NAME has been created
-
