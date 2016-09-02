@@ -70,10 +70,10 @@ while read m; do
     fi
     # inittab
     if [ -e "$inittabfile" ]; then
-      # second module is consider to be 'core' and only boot in console runlevel 3
-      if [ $nmodule -eq 1 ]; then
+      # first module is consider to be 'core' and only boot in console runlevel 3
+      if [ $nmodule -eq 0 ]; then
         tar -xOf "$inittabfile" etc/inittab.new | sed 's/^id:.:initdefault:/id:3:initdefault:/' > "$ROOT"/etc/inittab
-      elif [ $nmodule -eq 2 ]; then
+      elif [ $nmodule -eq 1 ]; then
         sed -i 's/^id:.:initdefault:/id:4:initdefault:/' "$ROOT"/etc/inittab
       fi
     fi
