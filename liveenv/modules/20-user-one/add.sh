@@ -27,8 +27,6 @@ user-one
   * users
   * fuse
   * wheel (so is sudoer)
-
-
 EOF
 
 echo 'one:x:1000:100::/home/one:/bin/bash' >> "$RDIR"/etc/passwd
@@ -59,7 +57,5 @@ polkit.addRule(function(action, subject) {
         return polkit.Result.YES;
     }
 });
-
-
 EOF
 
