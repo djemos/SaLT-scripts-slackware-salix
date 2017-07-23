@@ -99,8 +99,8 @@ III/ Create an ISO
       ┊ export VER
       ┊ export RLZ
       ┊ export BGIMAGE_NAME
-      ┊ export FUFSVER
-      ┊ export FUFSURL
+      ┊ #export FUFSVER
+      ┊ #export FUFSURL
       ┊ export ISO_NAME
       ┊ export COMP
       ┊ 
