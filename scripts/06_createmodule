@@ -87,7 +87,7 @@ while read m; do
     fi
     # /var/log/setup
     if [ $lastmodule = $m ]; then
-       #mount --bind /dev/pts "$ROOT/dev/pts"
+       mount --bind /dev/pts "$ROOT/dev/pts"
        echo "set localtime to Etc/GMT"
        mkdir -p "$ROOT"/usr/share/zoneinfo/Etc
        mkdir -p "$ROOT"/etc
@@ -110,16 +110,16 @@ while read m; do
             ./var/log/setup/$script "$ROOT" 
           fi
         done
-        #echo "Running 'chroot . /usr/sbin/clocksetup -c -z'"
-        #chroot . /usr/sbin/clocksetup -c -z
-        #echo "Running 'chroot . /usr/sbin/localesetup'"
-        #chroot . /usr/sbin/localesetup en_US.utf8
+        echo "Running 'chroot . /usr/sbin/clocksetup -c -z'"
+        chroot . /usr/sbin/clocksetup -c -z
+        echo "Running 'chroot . /usr/sbin/localesetup'"
+        chroot . /usr/sbin/localesetup en_US.utf8
         echo "Running 'chroot . /usr/sbin/update-all'"
         chroot . /usr/sbin/update-all
         sleep 10
         rm ./dev/null
       )
-      #umount $ROOT/dev/pts
+      umount $ROOT/dev/pts
     fi
     umount "$ROOT"
     # remove any fakely deleted files in RO branches, default suffix is _DELETED~
