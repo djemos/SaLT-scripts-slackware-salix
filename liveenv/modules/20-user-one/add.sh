@@ -37,25 +37,24 @@ cp -r "$RDIR"/etc/skel/* "$RDIR"/etc/skel/.??* "$RDIR"/home/one/ 2>/dev/null
 
 echo 'chown -R 1000:100 home/one' >> "$doinst"
 
-mkdir -p "$RDIR"/etc/polkit-1/rules.d/
+#mkdir -p "$RDIR"/etc/polkit-1/rules.d/
 
-cat <<EOF >> "$RDIR/etc/polkit-1/rules.d/49-nopasswd_global.rules"
-/* Allow members of the wheel group to execute any actions
- * without password authentication, similar to "sudo NOPASSWD:"
- */
-polkit.addRule(function(action, subject) {
-    if (subject.isInGroup("wheel")) {
-        return polkit.Result.YES;
-    }
-});
-
-/* Allow members of the polkitd group to execute any actions
- * without password authentication, similar to "sudo NOPASSWD:"
- */
-polkit.addRule(function(action, subject) {
-    if (subject.isInGroup("polkitd")) {
-        return polkit.Result.YES;
-    }
-});
-EOF
-
+#cat <<EOF >> "$RDIR/etc/polkit-1/rules.d/49-nopasswd_global.rules"
+#/* Allow members of the wheel group to execute any actions
+# * without password authentication, similar to "sudo NOPASSWD:"
+# */
+#polkit.addRule(function(action, subject) {
+#    if (subject.isInGroup("wheel")) {
+#        return polkit.Result.YES;
+#    }
+#});
+#
+#/* Allow members of the polkitd group to execute any actions
+# * without password authentication, similar to "sudo NOPASSWD:"
+# */
+#polkit.addRule(function(action, subject) {
+#    if (subject.isInGroup("polkitd")) {
+#        return polkit.Result.YES;
+#    }
+#});
+#EOF
