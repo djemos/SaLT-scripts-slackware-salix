@@ -84,8 +84,8 @@ while read m; do
       elif [ $nmodule -eq 1 ]; then
         sed -i 's/^id:.:initdefault:/id:4:initdefault:/' "$ROOT"/etc/inittab
         if [[ -L "$ROOT"/etc/X11/xinit/xinitrc ]]; then
-			unlink "$ROOT"/etc/X11/xinit/xinitrc
-		fi	
+	   unlink "$ROOT"/etc/X11/xinit/xinitrc
+	fi	
       fi
     fi
     # /var/log/setup
