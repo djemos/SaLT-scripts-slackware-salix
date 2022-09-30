@@ -83,6 +83,9 @@ while read m; do
         tar -xOf "$inittabfile" etc/inittab.new | sed 's/^id:.:initdefault:/id:3:initdefault:/' > "$ROOT"/etc/inittab
       elif [ $nmodule -eq 1 ]; then
         sed -i 's/^id:.:initdefault:/id:4:initdefault:/' "$ROOT"/etc/inittab
+        if [[ -L "$ROOT"/etc/X11/xinit/xinitrc ]]; then
+			    unlink "$ROOT"/etc/X11/xinit/xinitrc
+		  fi	
       fi
     fi
     # /var/log/setup
@@ -97,9 +100,9 @@ while read m; do
         cd "$ROOT"
         # /dev/null could be needed and will not be usable, so the trick is to delete it, and then delete the "deletion".
         rm ./dev/null
-        if [ -e var/log/setup/setup.htmlview ]; then
-          grep -q midori var/log/setup/setup.htmlview || sed -i 's/seamonkey/\0 midori/' var/log/setup/setup.htmlview
-        fi
+        #if [ -e var/log/setup/setup.htmlview ]; then
+        #  grep -q midori var/log/setup/setup.htmlview || sed -i 's/seamonkey/\0 midori/' var/log/setup/setup.htmlview
+        #fi
         #chmod a+r-x+X -R etc/gtk-2.0 etc/pango
         chmod a+r-x+X -R etc/gtk-2.0
         for install_script in var/log/setup/setup.*; do
