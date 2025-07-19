@@ -1,7 +1,7 @@
 #!/bin/sh
 # vim: set syn=sh ft=sh et sw=2 sts=2 ts=2 tw=0:
-# Maintainer: djemos <dijemos@gmail.com>
-# Contributors: Shador <shador@salixos.org>, Akuna <akuna@salixos.org>, djemos <dijemos@gmail.com>
+# Maintainer: JRD <jrd@salixos.org>
+# Contributors: Shador <shador@salixos.org>, Akuna <akuna@salixos.org>
 # Licence: GPL v3+
 #
 cd $(dirname "$0")
@@ -17,9 +17,11 @@ if [ -z "$lastmodule" ]; then
     lastmodule=$m
   done < "$modules"
   export lastmodule
+  kernelmodule="05-kernel"
+  export kernelmodule
 fi
-
 MODULE="$1"
+
 [ -z "$MODULE" ] && MODULE=all
 
 #funionfsopts="$startdir/src/empty=ro" # the first readonly directory (will always be empty)
@@ -27,7 +29,8 @@ funionfsopts="$startdir/src/empty"
 mkdir -p $startdir/src/.ovlwork
 nmodule=0
 inittabfile=$(find "$startdir"/PKGS -name "sysvinit-scripts-*"|grep "sysvinit-scripts-[^-]\+-[^-]\+-[^-]\+.t[gblx]z"|head -n 1)
-cmdinstall='spkg -i'
+#cmdinstall='spkg -i'
+cmdinstall='installpkg '
 which spkg >/dev/null 2>&1 || cmdinstall='installpkg'
 cd "$startdir"/src
 while read m; do
@@ -39,7 +42,6 @@ while read m; do
     fi
     echo3 "Installing packages for $m..."
     mkdir $m
-    
     ROOT="$startdir"/src/module # for use by spkg or installpkg
     export ROOT
     echo "funionfsopts=$funionfsopts"
@@ -48,7 +50,7 @@ while read m; do
     mount -t overlay -o lowerdir=${funionfsopts},upperdir=$startdir/src/$m,workdir=$startdir/src/.ovlwork overlay ${ROOT}
     
     #funionfsopts="$funionfsopts:$startdir/src/$m=ro"
-    funionfsopts="$funionfsopts:$startdir/src/$m"
+    funionfsopts="$startdir/src/$m:$funionfsopts"
     
     nb=$(echo "$list" | wc -w)
     i=0
@@ -69,9 +71,19 @@ while read m; do
       timeremain=$((($nb - $i) * $offset / $i))
       echo 'Remaining time (estimated) :' $(date -d "1970-01-01 UTC +$timeremain seconds" +%M:%S)
       echo ''
-      file=$(find -L "$startdir"/PKGS -name "$p-*"|grep "$p-[^-]\+-[^-]\+-[^-]\+.t[gblx]z"|head -n 1)
+      file=$(find -L "$startdir"/PKGS -name "$p-*"|grep "$p-[^-]\+-[^-]\+-[^-]\+.t[gblx]z"|sort -V|head -n 1)
+    if [ $kernelmodule = $m ]; then
+          mount --bind /dev "$ROOT/dev"
+	  mount --bind /proc "$ROOT/proc"
+	  mount --bind /sys "$ROOT/sys"
+    fi
       $cmdinstall "$file"
     done
+    if [ $kernelmodule = $m ]; then
+         umount $ROOT/dev
+         umount $ROOT/proc
+	     umount $ROOT/sys
+    fi
     # dotnew
     if [ -e "$ROOT"/etc ]; then
       find "$ROOT"/etc -name '*.new'|xargs -i@ bash -c '(N="$1"; F="$(dirname $N)/$(basename $N .new)"; if [ -e $F ]; then rm $N; else mv $N $F; fi)' -- @
@@ -84,12 +96,15 @@ while read m; do
       elif [ $nmodule -eq 1 ]; then
         sed -i 's/^id:.:initdefault:/id:4:initdefault:/' "$ROOT"/etc/inittab
         if [[ -L "$ROOT"/etc/X11/xinit/xinitrc ]]; then
-	   unlink "$ROOT"/etc/X11/xinit/xinitrc
-	fi	
+	       unlink "$ROOT"/etc/X11/xinit/xinitrc
+	    fi
       fi
     fi
     # /var/log/setup
     if [ $lastmodule = $m ]; then
+       mount --bind /dev "$ROOT/dev"
+       mount --bind /proc "$ROOT/proc"
+       mount --bind /sys "$ROOT/sys"
        mount --bind /dev/pts "$ROOT/dev/pts"
        echo "set localtime to Etc/GMT"
        mkdir -p "$ROOT"/usr/share/zoneinfo/Etc
@@ -100,9 +115,9 @@ while read m; do
         cd "$ROOT"
         # /dev/null could be needed and will not be usable, so the trick is to delete it, and then delete the "deletion".
         rm ./dev/null
-        #if [ -e var/log/setup/setup.htmlview ]; then
-        #  grep -q midori var/log/setup/setup.htmlview || sed -i 's/seamonkey/\0 midori/' var/log/setup/setup.htmlview
-        #fi
+        if [ -e var/log/setup/setup.htmlview ]; then
+          grep -q midori var/log/setup/setup.htmlview || sed -i 's/seamonkey/\0 midori/' var/log/setup/setup.htmlview
+        fi
         #chmod a+r-x+X -R etc/gtk-2.0 etc/pango
         chmod a+r-x+X -R etc/gtk-2.0
         for install_script in var/log/setup/setup.*; do
@@ -123,6 +138,9 @@ while read m; do
         rm ./dev/null
       )
       umount $ROOT/dev/pts
+      umount $ROOT/dev
+      umount $ROOT/proc
+      umount $ROOT/sys
     fi
     umount "$ROOT"
     # remove any fakely deleted files in RO branches, default suffix is _DELETED~
@@ -130,7 +148,7 @@ while read m; do
   else
     if [ -e $m ]; then
       #funionfsopts="$funionfsopts:$startdir/src/$m=ro"
-      funionfsopts="$funionfsopts:$startdir/src/$m"
+      funionfsopts="$startdir/src/$m:$funionfsopts"
     fi
   fi
   nmodule=$(($nmodule + 1))
