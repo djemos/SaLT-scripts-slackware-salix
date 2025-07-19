@@ -29,8 +29,8 @@ funionfsopts="$startdir/src/empty"
 mkdir -p $startdir/src/.ovlwork
 nmodule=0
 inittabfile=$(find "$startdir"/PKGS -name "sysvinit-scripts-*"|grep "sysvinit-scripts-[^-]\+-[^-]\+-[^-]\+.t[gblx]z"|head -n 1)
-#cmdinstall='spkg -i'
-cmdinstall='installpkg '
+cmdinstall='spkg -i'
+#cmdinstall='installpkg '
 which spkg >/dev/null 2>&1 || cmdinstall='installpkg'
 cd "$startdir"/src
 while read m; do
